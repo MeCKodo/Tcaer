@@ -1,5 +1,8 @@
+import Component from './component';
+
 const Tcaer = {
-  h
+  h,
+  Component,
 };
 
 function h( tag, attrs, ...children ) {

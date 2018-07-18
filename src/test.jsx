@@ -8,4 +8,10 @@ const element = (
   </div>
 );
 
+function HelloW(props) {
+  return <h1>sdf, {props.name}</h1>
+}
+
+console.log(<HelloW />);
+
 export default element;

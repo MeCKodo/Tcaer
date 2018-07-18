@@ -11,8 +11,6 @@ function setAttributes(dom, name, value) {
   // style
   if (name === 'style') {
     Object.keys(value).forEach((item) => {
-      console.log(item);
-      console.log(value[item]);
       const styleValue = value[item];
       dom.style[item] = typeof styleValue === 'number' ? `${styleValue}px` : styleValue;
     });

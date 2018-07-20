@@ -1,9 +1,8 @@
 import { setAttributes } from './utils';
 
-function render(vnode, container) {
-  if ( typeof vnode === 'string' ) {
-    const textNode = document.createTextNode( vnode );
-    return container.appendChild( textNode );
+function genDOM(vnode) {
+  if (typeof vnode === 'string') {
+    return document.createTextNode(vnode);
   }
   
   const parentDOM = document.createElement(vnode.tag);
@@ -14,17 +13,20 @@ function render(vnode, container) {
     });
   }
   
-  vnode.children.length && vnode.children.forEach((child) => render(child, parentDOM));
+  vnode.children.length && vnode.children.forEach((child) => {
+    parentDOM.appendChild(genDOM(child));
+  });
   
-  container.appendChild(parentDOM);
+  return parentDOM;
 }
 
-const tcaerDom = {
+const TcaerDom = {
   render(vnode, container, callback) {
     container.innerHTML = '';
-    render(vnode,container);
+    const frag = document.createDocumentFragment();
+    container.appendChild(genDOM(vnode, frag));
     callback && callback();
   },
 };
 
-export default tcaerDom;
+export default TcaerDom;

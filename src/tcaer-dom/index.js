@@ -1,6 +1,8 @@
 import { setAttributes } from './utils';
 
 function genDOM(vnode) {
+  if (typeof vnode === 'number') vnode = String(vnode);
+  
   if (typeof vnode === 'string') {
     return document.createTextNode(vnode);
   }
@@ -14,6 +16,12 @@ function genDOM(vnode) {
   }
   
   vnode.children.length && vnode.children.forEach((child) => {
+    if (Array.isArray(child)) {
+      child.forEach((item) => {
+        parentDOM.appendChild(genDOM(item));
+      });
+      return;
+    }
     parentDOM.appendChild(genDOM(child));
   });
   

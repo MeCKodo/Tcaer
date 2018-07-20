@@ -8,7 +8,9 @@ const element = () => {
   return (
     <div onClick={test} a="aaa" className={'sdf'} style={{width: 220, color: 'red'}} id='id1'>
       text node
-      {/*{ arr.map((item) => <b>{item}</b>) }*/}
+      <ul>
+        { arr.map((item) => <li>{item}</li>) }
+      </ul>
       <i id='sdf'>other child node</i>
     </div>
   )

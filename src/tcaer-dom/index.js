@@ -1,6 +1,14 @@
 import { setAttributes } from './utils';
 
+function createComponent() {
+
+}
+
 function genDOM(vnode) {
+  if (typeof vnode.tag === 'function') {
+    const component = new vnode.tag();
+    return genDOM(component.render ? component.render() : component);
+  }
   if (typeof vnode === 'number') vnode = String(vnode);
   
   if (typeof vnode === 'string') {

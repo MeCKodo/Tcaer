@@ -2,10 +2,10 @@ import Tcaer from './tcaer';
 
 class App extends Tcaer.Component {
   render() {
-    console.log(this.props);
+    const { data } = this.props;
     return (
       <div className="App">
-        <span>I'm App</span>
+        <span>我是App组件，data={data}</span>
       </div>
     );
   }
@@ -16,6 +16,7 @@ function Hello1(props) {
   console.log(b, '----bbb');
   return <div id='hello1' className='hello1'><b>hello{item}, {b}</b></div>
 }
+
 function Hello() {
   const arr = [1, 2, 3];
   
@@ -25,13 +26,13 @@ function Hello() {
           style={{width: 220, color: 'red'}}
           id='id1'
     >
-      {/*text node*/}
-      {/*<ul>*/}
-        {/*{ arr.map((item) => <li>{item}</li>) }*/}
-      {/*</ul>*/}
+      text node
+      <ul>
+        { arr.map((item) => <li>{item}</li>) }
+      </ul>
       { arr.map((item) => <Hello1 item={item} />) }
-      {/*<App data={'data1'} />*/}
-      {/*<i id='sdf'>other child node</i>*/}
+      <App data={'data1'} />
+      <i id='sdf'>other child node</i>
     </div>
   )
 }
@@ -43,4 +44,4 @@ function Hello() {
 // console.log(<App />); // 函数
 // console.log(new App()); // component对象
 
-export default Hello();
+export default Hello;

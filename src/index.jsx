@@ -1,8 +1,8 @@
 import Tcaer from './tcaer';
 import TcaerDOM from './tcaer-dom';
-import t from './test';
+import Demo from './test';
 // console.log(t);
-TcaerDOM.render(t, document.getElementById('container'));
+TcaerDOM.render(<Demo />, document.getElementById('container'));
 //
 // function tick() {
 //   const element = (

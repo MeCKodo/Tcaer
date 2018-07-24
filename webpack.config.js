@@ -4,7 +4,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');//引入
 
 module.exports = {
   entry: {
-    index: './src/index.js'
+    index: './src/index.jsx'
   },
   output: {
     // publicPath: '/static/',

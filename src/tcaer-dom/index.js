@@ -1,14 +1,21 @@
 import { setAttributes } from './utils';
 
-function createComponent() {
-
+function createComponent(vnode) {
+  console.log(vnode, '---vnode');
+  const { attrs, tag } = vnode;
+  const props = attrs ? attrs : {};
+  const component = new tag(props);
+  return genDOM(component.render ? component.render() : component);
 }
 
 function genDOM(vnode) {
+  // 如果差值表达式里有props没有的值会出错，渲染boolean会无效
+  if (!vnode || typeof vnode === 'boolean') vnode = '';
+  
   if (typeof vnode.tag === 'function') {
-    const component = new vnode.tag();
-    return genDOM(component.render ? component.render() : component);
+    return createComponent(vnode);
   }
+  
   if (typeof vnode === 'number') vnode = String(vnode);
   
   if (typeof vnode === 'string') {

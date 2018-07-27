@@ -43,6 +43,7 @@ import Tcaer from './tcaer';
 // console.log(new Hello1({x:1})); // vnode
 // console.log(<App />); // 函数
 // console.log(new App()); // component对象
+// const Dog = (num) => <li>狗{num}</li>;
 
 const Hello = () => {
   const arr = [1, 2, 3];
@@ -52,9 +53,12 @@ const Hello = () => {
       那个人好像一条<b style={{color:'red'}}>狗</b>啊
       <ul>
         { arr.map((num) => <li>狗{num}</li>) }
+        {/*{ arr.map((num) => Dog(num)) }*/}
       </ul>
     </div>
   );
 };
+
+console.log(<Hello />); // 先来看看如果是标签的形式渲染成什么样？
 
 export default Hello;

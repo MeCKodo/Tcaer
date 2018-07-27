@@ -1,19 +1,20 @@
 // import { setAttributes } from './utils';
-/*
+
 function createComponent(vnode) {
   console.log(vnode, '---vnode');
   const { attrs, tag } = vnode;
-  const props = attrs ? attrs : {};
-  const component = new tag(props);
-  return genDOM(component.render ? component.render() : component);
-}*/
+  // const props = attrs ? attrs : {};
+  const component = new tag();
+  return genDOM(component);
+  // return genDOM(component.render ? component.render() : component);
+}
 
 function genDOM(vnode) {
   // if (!vnode || typeof vnode === 'boolean') vnode = '';
   
-  // if (typeof vnode.tag === 'function') {
-  //   return createComponent(vnode);
-  // }
+  if (typeof vnode.tag === 'function') {
+    return createComponent(vnode);
+  }
   
   if (typeof vnode === 'number') vnode = String(vnode); // 这行
   

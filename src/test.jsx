@@ -44,10 +44,17 @@ import Tcaer from './tcaer';
 // console.log(<App />); // 函数
 // console.log(new App()); // component对象
 
-const Hello = (
-  <div>
-    那个人好像一条<b style={{color:'red'}}>狗</b>啊
-  </div>
-);
+const Hello = () => {
+  const arr = [1, 2, 3];
+  
+  return (
+    <div>
+      那个人好像一条<b style={{color:'red'}}>狗</b>啊
+      <ul>
+        { arr.map((num) => <li>狗{num}</li>) }
+      </ul>
+    </div>
+  );
+};
 
 export default Hello;

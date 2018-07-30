@@ -4,7 +4,6 @@ function createComponent(vnode, container) {
   const { attrs, tag } = vnode;
   const props = attrs ? attrs : {};
   const component = new tag(props);
-  console.log(component);
   return component.render ?
     renderComponent(component, container) :
     renderFunctionalComponent(component, container);
@@ -15,15 +14,22 @@ function renderFunctionalComponent(component, container) {
 }
 
 function renderComponent(component, container) {
-  const DOM = genDOM(component.render(), container);
+  const vnode = component.render();
+  const DOM = genDOM(vnode, container);
+  
+  component.__prevVnode = vnode;
+  component.dom = DOM;
+  
   container.appendChild(DOM);
+  
   if (component.componentDidMount) {
     component.componentDidMount();
   }
+  
   return DOM;
 }
 
-function genDOM(vnode, container) {
+export function genDOM(vnode, container) {
   // 如果差值表达式里有props没有的值会出错，渲染boolean会无效
   if (!vnode || typeof vnode === 'boolean') vnode = '';
   
@@ -38,7 +44,6 @@ function genDOM(vnode, container) {
   }
   
   const parentDOM = document.createElement(vnode.tag);
-  
   if (vnode.attrs) {
     Object.keys(vnode.attrs).forEach((item) => {
       setAttributes(parentDOM, item, vnode.attrs[item]);

@@ -1,14 +1,28 @@
 import Tcaer from './tcaer';
 
 class App extends Tcaer.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      a: 'old',
+    }
+  }
   componentDidMount() {
     console.log('componentDidMount()', document.getElementById('app'));
   }
   
+  onClick() {
+    this.setState({
+      a: 'new'
+    });
+    console.log(this.state);
+  };
+  
   render() {
+    const { a } = this.state;
     return (
-      <div className="App" id='app'>
-        <span>我是App组件，data=</span>
+      <div className="App" id='app' >
+        <span onClick={this.onClick.bind(this)}>我是App组件，data={a}</span>
       </div>
     );
   }

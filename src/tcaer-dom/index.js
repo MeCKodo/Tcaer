@@ -4,8 +4,19 @@ function createComponent(vnode, container) {
   const { attrs, tag } = vnode;
   const props = attrs ? attrs : {};
   const component = new tag(props);
-  const needGenVNode = component.render ? component.render() : component;
-  const DOM = genDOM(needGenVNode, container);
+  if (component.render) {
+    return renderComponent(component, container);
+  } else {
+    return renderFunctionalComponent(component, container);
+  }
+}
+
+function renderFunctionalComponent(component, container) {
+  return genDOM(component, container);
+}
+
+function renderComponent(component, container) {
+  const DOM = genDOM(component.render(), container);
   container.appendChild(DOM);
   if (component.componentDidMount) {
     component.componentDidMount();
@@ -53,6 +64,7 @@ const TcaerDom = {
     container.innerHTML = '';
     const DOM = genDOM(vnode, container);
     container.appendChild(DOM);
+    
     callback && callback();
   },
 };

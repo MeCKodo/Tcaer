@@ -4,11 +4,10 @@ function createComponent(vnode, container) {
   const { attrs, tag } = vnode;
   const props = attrs ? attrs : {};
   const component = new tag(props);
-  if (component.render) {
-    return renderComponent(component, container);
-  } else {
-    return renderFunctionalComponent(component, container);
-  }
+  console.log(component);
+  return component.render ?
+    renderComponent(component, container) :
+    renderFunctionalComponent(component, container);
 }
 
 function renderFunctionalComponent(component, container) {

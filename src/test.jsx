@@ -17,7 +17,7 @@ class App extends Tcaer.Component {
 function Hello1(props) {
   const { item, b } = props;
   // console.log(b, '----bbb');
-  return <div id='hello1' className='hello1'><b>hello{item}, {b}</b></div>
+  return <div id={`hello${item}`} className='hello1'><b>hello{item}, {b}</b></div>
 }
 
 function Hello() {

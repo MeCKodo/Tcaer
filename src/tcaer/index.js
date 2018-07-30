@@ -6,6 +6,7 @@ const Tcaer = {
 };
 
 function h( tag, attrs, ...children ) {
+  console.log(children);
   return {
     tag,
     attrs,

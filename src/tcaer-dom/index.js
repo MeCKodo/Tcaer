@@ -1,19 +1,24 @@
 import { setAttributes } from './utils';
 
-function createComponent(vnode) {
-  console.log(vnode, '---vnode');
+function createComponent(vnode, container) {
   const { attrs, tag } = vnode;
   const props = attrs ? attrs : {};
   const component = new tag(props);
-  return genDOM(component.render ? component.render() : component);
+  const needGenVNode = component.render ? component.render() : component;
+  const DOM = genDOM(needGenVNode, container);
+  container.appendChild(DOM);
+  if (component.componentDidMount) {
+    component.componentDidMount();
+  }
+  return DOM;
 }
 
-function genDOM(vnode) {
+function genDOM(vnode, container) {
   // 如果差值表达式里有props没有的值会出错，渲染boolean会无效
   if (!vnode || typeof vnode === 'boolean') vnode = '';
   
   if (typeof vnode.tag === 'function') {
-    return createComponent(vnode);
+    return createComponent(vnode, container);
   }
   
   if (typeof vnode === 'number') vnode = String(vnode);
@@ -33,11 +38,11 @@ function genDOM(vnode) {
   vnode.children.length && vnode.children.forEach((child) => {
     if (Array.isArray(child)) {
       child.forEach((item) => {
-        parentDOM.appendChild(genDOM(item));
+        parentDOM.appendChild(genDOM(item, container));
       });
       return;
     }
-    parentDOM.appendChild(genDOM(child));
+    parentDOM.appendChild(genDOM(child, container));
   });
   
   return parentDOM;
@@ -46,8 +51,8 @@ function genDOM(vnode) {
 const TcaerDom = {
   render(vnode, container, callback) {
     container.innerHTML = '';
-    const frag = document.createDocumentFragment();
-    container.appendChild(genDOM(vnode, frag));
+    const DOM = genDOM(vnode, container);
+    container.appendChild(DOM);
     callback && callback();
   },
 };

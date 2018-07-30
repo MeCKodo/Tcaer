@@ -4,4 +4,5 @@ export default class Component {
     this.state = {};
     this.props = props;
   }
+  
 }

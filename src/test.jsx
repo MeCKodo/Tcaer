@@ -5,6 +5,7 @@ class App extends Tcaer.Component {
     super(props);
     this.state = {
       a: 'old',
+      className: 'App',
     }
   }
   componentDidMount() {
@@ -13,15 +14,17 @@ class App extends Tcaer.Component {
   
   onClick() {
     this.setState({
-      a: 'new'
+      a: 'new',
+      dataId: 'dataId',
+      className: '',
     });
     console.log(this.state);
   };
   
   render() {
-    const { a } = this.state;
+    const { a, dataId, className } = this.state;
     return (
-      <div className="App" id='app' >
+      <div className={className} id={a} data-id={dataId} >
         <span onClick={this.onClick.bind(this)}>我是App组件，data={a}</span>
       </div>
     );

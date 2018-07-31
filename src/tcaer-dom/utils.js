@@ -1,5 +1,6 @@
-function setAttributes(dom, name, value) {
-  if ( name === 'className' ) name = 'class';
+function setAttributes(dom, name, value = '') {
+  console.log(name, value);
+  if (name === 'className') name = 'class';
   
   // event
   if (/on\w+/.test(name)) {

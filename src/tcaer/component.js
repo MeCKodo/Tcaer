@@ -1,4 +1,5 @@
 import { genDOM } from "../tcaer-dom";
+import { setAttributes } from "../tcaer-dom/utils";
 
 function diffAttrs(prevVnode, nextVnode) {
   const { attrs: prevAttrs } = prevVnode;
@@ -35,26 +36,26 @@ function diffAttrs(prevVnode, nextVnode) {
   }
 }
 
+function updateAttrs(dom, prevVnode, nextVnode) {
+  const { needAdd, needUpdate, needRemove } = diffAttrs(prevVnode, nextVnode);
+  Object.keys(needAdd).forEach((attr) => {
+    setAttributes(dom, attr, needAdd[attr]);
+  });
+  
+  Object.keys(needUpdate).forEach((attr) => {
+    setAttributes(dom, attr, needUpdate[attr]);
+  });
+  
+  Object.keys(needRemove).forEach((attr) => {
+    setAttributes(dom, attr, '');
+  });
+}
+
 function updateComponent(instance) {
   const nextVnode = instance.render();
   const prevVnode = instance.__prevVnode;
   const dom = instance.dom;
-  const { needAdd, needUpdate, needRemove } = diffAttrs(prevVnode, nextVnode);
-  console.log(instance.render(), '---new vnode');
-  console.log(instance.__prevVnode, '------prev');
-  console.log(needAdd, needUpdate, needRemove);
-  Object.keys(needAdd).forEach((attr) => {
-    dom.setAttribute(attr, needAdd[attr]);
-  });
-  Object.keys(needUpdate).forEach((attr) => {
-    dom.setAttribute(attr, needAdd[attr]);
-  });
-  Object.keys(needRemove).forEach((attr) => {
-    dom.removeAttribute(attr);
-  });
-  
-  
-  // console.log(instance.dom, '------target');
+  updateAttrs(dom, prevVnode, nextVnode);
   
 }
 

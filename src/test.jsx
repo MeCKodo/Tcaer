@@ -6,6 +6,9 @@ class App extends Tcaer.Component {
     this.state = {
       a: 'old',
       className: 'App',
+      text: '修改前的文本节点',
+      isSpan: true,
+      num: 0,
     }
   }
   componentDidMount() {
@@ -17,15 +20,27 @@ class App extends Tcaer.Component {
       a: 'new',
       dataId: 'dataId',
       className: '',
+      text: '修改后的文本节点',
+      isSpan: false,
     });
-    console.log(this.state);
+    console.log('span');
   };
-  
+  plus(ss) {
+    const { num } = this.state;
+    this.setState({
+      num: num + 1
+    })
+  }
   render() {
-    const { a, dataId, className } = this.state;
+    const { text, isSpan, num } = this.state;
     return (
-      <div className={className} id={a} data-id={dataId} >
-        <span onClick={this.onClick.bind(this)}>我是App组件，data={a}</span>
+      <div  >
+        {text}
+        <br />
+        {isSpan ?
+          <span onClick={this.onClick.bind(this)}>我是span，data=</span> :
+          <div onClick={this.plus.bind(this)}>我切换<b>{num}</b>标签</div>
+        }
       </div>
     );
   }

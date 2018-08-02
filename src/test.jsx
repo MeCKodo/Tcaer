@@ -56,5 +56,5 @@ const Hello = () => {
     </div>
   );
 };
-
+console.log(Hello());
 export default Hello;

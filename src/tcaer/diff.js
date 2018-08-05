@@ -1,6 +1,17 @@
 import { setAttributes } from "../tcaer-dom/utils";
 import {genDOM} from "../tcaer-dom";
 
+const CREATE = 'CREATE';
+const UPDATE = 'UPDATE';
+const REPLACE = 'REPLACE';
+const REMOVE = 'REMOVE';
+
+function changed(newNode, oldNode) {
+  return typeof newNode !== typeof oldNode ||
+        typeof newNode === 'string' && newNode !== oldNode ||
+    newNode.tag !== oldNode.tag
+}
+
 function diffAttrs(prevVnode, nextVnode) {
   const { attrs: prevAttrs } = prevVnode;
   const { attrs: nextAttrs } = nextVnode;
@@ -54,63 +65,65 @@ function updateAttrs(dom, prevVnode, nextVnode) {
 function diffChildren(dom, prevVnode, nextVnode) {
   const { children: prevChildren } = prevVnode;
   const { children: nextChildren } = nextVnode;
-  console.log(prevChildren, nextChildren);
-  const newChildren = [];
-  nextChildren.forEach((node, index) => {
-    // node 为string（textNode）情况
-    if (!node || typeof node === 'boolean') node = '';
-    
-    if (typeof node === 'number') node = String(node);
-    
-    if (typeof node === 'string') {
-      if (prevChildren[index] !== nextChildren[index]) {
-        newChildren.push(node);
-      }
-    } else {
-      // node 为对象有两种情况
-      if (typeof node.tag === 'string') {
-        //   1. 一种tag直接是DOM的vnode
-        if (prevChildren[index].tag !== nextChildren[index].tag) {
-          // span -> b
-          newChildren.push(nextChildren[index]);
-        } else {
-          console.log(nextChildren[index], 'sdfdsfsf');
-          newChildren.push('');
-          // 递归 diffChildren
-          // const newChildren = diffChildren(dom)
-        }
-      } else {
-        //   2. 一种tag是fn的component
-        
-      }
+  const patches = [];
+  const maxLen = Math.max(prevChildren.length, nextChildren.length);
+  for(let i = 0;i< maxLen; i++) {
+    patches[i] = diff(
+      nextChildren[i],
+      prevChildren[i],
+    )
+  }
+  return patches;
+}
+
+function diff(newNode, oldNode) {
+  if (!oldNode) {
+    return {
+      type: CREATE,
+      newNode,
     }
-  });
-  console.log(newChildren);
-  return newChildren;
+  }
+  if (!newNode) {
+    return { type: REMOVE }
+  }
+  if (changed(newNode, oldNode)) {
+    return {
+      type: REPLACE,
+      newNode
+    }
+  }
+  if (newNode.tag) {
+   return {
+     type: UPDATE,
+     children: diffChildren('', newNode, oldNode)
+   }
+  }
 }
 
 function updateChildren(dom, prevVnode, nextVnode) {
-  const newChild = diffChildren(dom, prevVnode, nextVnode);
+  // const newChild = diffChildren(dom, prevVnode, nextVnode);
   const childNodes = dom.childNodes;
+  console.log(prevVnode, nextVnode);
+  console.log(diffChildren(dom, prevVnode, nextVnode))
   // update dom
-  newChild.forEach((node, index) => {
-    const targetDom = childNodes[index];
-    if (!node) return;
-    
-    if (typeof node === 'string') {
-      dom.childNodes[index].textContent = node;
-    } else {
-      if (typeof node.tag === 'string') {
-        console.log(targetDom, node, '-------');
-        const parentNode = targetDom.parentNode;
-        const dom = genDOM(node, parentNode);
-        console.log(dom, '----domdomdomdom')
-        parentNode.replaceChild(dom, targetDom);
-      } else {
-      
-      }
-    }
-  });
+  // newChild.forEach((node, index) => {
+  //   const targetDom = childNodes[index];
+  //   if (!node) return;
+  //
+  //   if (typeof node === 'string') {
+  //     dom.childNodes[index].textContent = node;
+  //   } else {
+  //     if (typeof node.tag === 'string') {
+  //       console.log(targetDom, node, '-------');
+  //       const parentNode = targetDom.parentNode;
+  //       const dom = genDOM(node, parentNode);
+  //       console.log(dom, '----domdomdomdom')
+  //       parentNode.replaceChild(dom, targetDom);
+  //     } else {
+  //
+  //     }
+  //   }
+  // });
 }
 
 export {

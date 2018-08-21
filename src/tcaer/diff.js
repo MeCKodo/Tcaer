@@ -111,7 +111,8 @@ function updateDOM(parent, patches) {
     case CREATE: {
       const { newNode } = patches;
       const newEl = genDOM(newNode);
-      return parent.parentNode.appendChild(newEl);
+      console.log(parent, '---parent');
+      return parent.appendChild(newEl);
     }
     case REMOVE: {
       return parent.parentNode.removeChild(parent);
@@ -126,9 +127,11 @@ function updateDOM(parent, patches) {
     }
     case UPDATE: {
       const { children } = patches;
-      
+      const childNodes = parent.childNodes;
+      console.log(childNodes, '----childNodes');
+      // const childNodes = parent.childNodes.map(node => node);
       for( let i = 0; i < children.length; i++ ) {
-        updateDOM(parent.childNodes[i], children[i]);
+        updateDOM(childNodes[i] || parent, children[i]);
       }
     }
   }

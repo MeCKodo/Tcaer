@@ -44,10 +44,10 @@ class App extends Tcaer.Component {
     return (
       <div id={'test1'} >
         {text}
-        <br />
+        { isSpan && <span>我是span，data=</span> }
+  
         <button onClick={this.toggleSpan.bind(this)}>ssss{num}</button>
         
-        { isSpan && <span>我是span，data=</span> }
         
         {/*{isSpan ?*/}
           {/*<span onClick={this.onClick.bind(this)}>我是span，data=</span> :*/}

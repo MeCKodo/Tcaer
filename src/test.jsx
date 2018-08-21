@@ -11,6 +11,7 @@ class App extends Tcaer.Component {
       num: 0,
     }
   }
+  
   componentDidMount() {
     console.log('componentDidMount()', document.getElementById('app'));
   }
@@ -25,7 +26,14 @@ class App extends Tcaer.Component {
     });
     console.log('span');
   };
-  plus(ss) {
+  toggleSpan() {
+    const { isSpan, num } = this.state;
+    this.setState({
+      isSpan: !isSpan,
+      num: num + 1
+    });
+  }
+  plus() {
     const { num } = this.state;
     this.setState({
       num: num + 1
@@ -34,13 +42,17 @@ class App extends Tcaer.Component {
   render() {
     const { text, isSpan, num } = this.state;
     return (
-      <div  >
+      <div id={'test1'} >
         {text}
         <br />
-        {isSpan ?
-          <span onClick={this.onClick.bind(this)}>我是span，data=</span> :
-          <div onClick={this.plus.bind(this)}>我切换<b>{num}</b>标签</div>
-        }
+        <button onClick={this.toggleSpan.bind(this)}>ssss{num}</button>
+        
+        { isSpan && <span>我是span，data=</span> }
+        
+        {/*{isSpan ?*/}
+          {/*<span onClick={this.onClick.bind(this)}>我是span，data=</span> :*/}
+          {/*<div onClick={this.plus.bind(this)}>我切换<b>{num}</b>标签</div>*/}
+        {/*}*/}
       </div>
     );
   }

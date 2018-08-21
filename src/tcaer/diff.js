@@ -1,16 +1,10 @@
-import { setAttributes } from "../tcaer-dom/utils";
+import { setAttributes, isChange } from "../tcaer-dom/utils";
 import {genDOM} from "../tcaer-dom";
 
 const CREATE = 'CREATE';
 const UPDATE = 'UPDATE';
 const REPLACE = 'REPLACE';
 const REMOVE = 'REMOVE';
-
-function changed(newNode, oldNode) {
-  return typeof newNode !== typeof oldNode ||
-        typeof newNode === 'string' && newNode !== oldNode ||
-    newNode.tag !== oldNode.tag
-}
 
 function diffAttrs(prevVnode, nextVnode) {
   const { attrs: prevAttrs } = prevVnode;
@@ -62,13 +56,13 @@ function updateAttrs(dom, prevVnode, nextVnode) {
   });
 }
 
-function diffChildren(dom, prevVnode, nextVnode) {
+function diffChildren(nextVnode, prevVnode) {
   const { children: prevChildren } = prevVnode;
   const { children: nextChildren } = nextVnode;
   const patches = [];
   const maxLen = Math.max(prevChildren.length, nextChildren.length);
-  for(let i = 0;i< maxLen; i++) {
-    patches[i] = diff(
+  for(let i = 0;i < maxLen; i++) {
+    patches[i] = diffNode(
       nextChildren[i],
       prevChildren[i],
     )
@@ -76,7 +70,10 @@ function diffChildren(dom, prevVnode, nextVnode) {
   return patches;
 }
 
-function diff(newNode, oldNode) {
+function diffNode(newNode, oldNode) {
+  if (typeof newNode === 'number') newNode = String(newNode);
+  if (typeof oldNode === 'number') oldNode = String(oldNode);
+  
   if (!oldNode) {
     return {
       type: CREATE,
@@ -86,47 +83,66 @@ function diff(newNode, oldNode) {
   if (!newNode) {
     return { type: REMOVE }
   }
-  if (changed(newNode, oldNode)) {
+  if (isChange(newNode, oldNode)) {
+    // TODO component replace
     return {
       type: REPLACE,
       newNode
     }
   }
   if (newNode.tag) {
-   return {
-     type: UPDATE,
-     children: diffChildren('', newNode, oldNode)
-   }
+    console.log(newNode, '---newNode');
+    if (typeof newNode.tag === 'function') {
+    
+    } else {
+      return {
+        type: UPDATE,
+        tag: newNode.tag,
+        children: diffChildren(newNode, oldNode)
+      }
+    }
   }
 }
 
-function updateChildren(dom, prevVnode, nextVnode) {
-  // const newChild = diffChildren(dom, prevVnode, nextVnode);
-  const childNodes = dom.childNodes;
-  console.log(prevVnode, nextVnode);
-  console.log(diffChildren(dom, prevVnode, nextVnode))
-  // update dom
-  // newChild.forEach((node, index) => {
-  //   const targetDom = childNodes[index];
-  //   if (!node) return;
-  //
-  //   if (typeof node === 'string') {
-  //     dom.childNodes[index].textContent = node;
-  //   } else {
-  //     if (typeof node.tag === 'string') {
-  //       console.log(targetDom, node, '-------');
-  //       const parentNode = targetDom.parentNode;
-  //       const dom = genDOM(node, parentNode);
-  //       console.log(dom, '----domdomdomdom')
-  //       parentNode.replaceChild(dom, targetDom);
-  //     } else {
-  //
-  //     }
-  //   }
-  // });
+function updateDOM(parent, patches) {
+  if (!patches) return;
+  
+  switch (patches.type) {
+    case CREATE: {
+      const { newNode } = patches;
+      const newEl = genDOM(newNode);
+      return parent.parentNode.appendChild(newEl);
+    }
+    case REMOVE: {
+      return parent.parentNode.removeChild(parent);
+    }
+    case REPLACE: {
+      const { newNode } = patches;
+      const newEl = genDOM(newNode);
+      if (parent.nodeType === 3) {
+        return parent.parentNode.replaceChild(newEl, parent);
+      }
+      return parent.parentNode.replaceChild(newEl, parent);
+    }
+    case UPDATE: {
+      const { children } = patches;
+      
+      for( let i = 0; i < children.length; i++ ) {
+        updateDOM(parent.childNodes[i], children[i]);
+      }
+    }
+  }
+}
+
+function update(dom, nextVnode, prevVnode) {
+  console.log(nextVnode, prevVnode);
+  const patchs = diffNode(nextVnode, prevVnode);
+  console.log(patchs, '---patch');
+  
+  updateDOM(dom, patchs);
 }
 
 export {
   updateAttrs,
-  updateChildren,
+  update,
 }

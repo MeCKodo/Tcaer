@@ -31,7 +31,7 @@ function renderComponent(component, container) {
 
 export function genDOM(vnode, container) {
   // 如果差值表达式里有props没有的值会出错，渲染boolean会无效
-  if (!vnode || typeof vnode === 'boolean') vnode = '';
+  if (typeof vnode === 'undefined' || typeof vnode === 'boolean') vnode = '';
   
   if (typeof vnode.tag === 'function') {
     return createComponent(vnode, container);
@@ -49,7 +49,6 @@ export function genDOM(vnode, container) {
       setAttributes(parentDOM, item, vnode.attrs[item]);
     });
   }
-  
   vnode.children.length && vnode.children.forEach((child) => {
     if (Array.isArray(child)) {
       child.forEach((item) => {

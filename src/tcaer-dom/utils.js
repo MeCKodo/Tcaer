@@ -1,3 +1,9 @@
+function isChange(newNode, oldNode) {
+  return typeof newNode !== typeof oldNode ||
+    typeof newNode === 'string' && newNode !== oldNode ||
+    newNode.tag !== oldNode.tag
+}
+
 function setAttributes(dom, name, value = '') {
   if (name === 'className') name = 'class';
   
@@ -22,5 +28,6 @@ function setAttributes(dom, name, value = '') {
 }
 
 export {
-  setAttributes
+  setAttributes,
+  isChange
 }

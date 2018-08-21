@@ -1,5 +1,5 @@
 import { genDOM } from "../tcaer-dom";
-import { updateAttrs, updateChildren } from "./diff";
+import { updateAttrs, update } from "./diff";
 
 function updateComponent(instance) {
   const nextVnode = instance.render();
@@ -7,7 +7,7 @@ function updateComponent(instance) {
   const dom = instance.dom;
   
   // updateAttrs(dom, prevVnode, nextVnode);
-  updateChildren(dom, prevVnode, nextVnode, instance);
+  update(dom, nextVnode, prevVnode, instance);
   instance.__prevVnode = instance.render();
 }
 

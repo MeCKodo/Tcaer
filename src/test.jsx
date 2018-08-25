@@ -17,19 +17,19 @@ class App extends Tcaer.Component {
   }
   
   onClick() {
-    this.setState({
-      a: 'new',
-      dataId: 'dataId',
-      className: '',
-      text: '修改后的文本节点',
-      isSpan: false,
-    });
+    // this.setState({
+    //   a: 'new',
+    //   dataId: 'dataId',
+    //   className: '',
+    //   text: '修改后的文本节点',
+    //   isSpan: false,
+    // });
     console.log('span');
   };
   toggleSpan() {
     const { isSpan, num } = this.state;
     this.setState({
-      // text: '修改后的文本节点',
+      text: '修改后的文本节点',
       isSpan: !isSpan,
       num: num + 1
     });
@@ -39,24 +39,29 @@ class App extends Tcaer.Component {
     this.setState({
       num: num + 1
     })
+    console.log('plus func');
   }
   render() {
     const { text, isSpan, num } = this.state;
     return (
-      <div id={'test1'} >
+      <div >
+        {/*{ isSpan && <span>我是span，data=</span> }*/}
+  
         {text}
-        { isSpan && <span>我是span，data=</span> }
-  
-        <button onClick={this.toggleSpan.bind(this)}>ssss{num}</button>
-  
-  
-        {/*{isSpan ?*/}
-          {/*<span onClick={this.onClick.bind(this)}>我是span，data=</span> :*/}
-          {/*<div onClick={this.plus.bind(this)}>我切换<b>{num}</b>标签</div>*/}
-        {/*}*/}
+        <DiffTest num={num} />
+        {isSpan ?
+          <b onClick={this.onClick.bind(this)}>b，bbbbbbbbb=</b> :
+          <div onClick={this.plus.bind(this)}>我切换<b>{num}</b>标签</div>
+        }
+        <button onClick={this.toggleSpan.bind(this)}>sdfsdf{num}</button>
+
       </div>
     );
   }
+}
+
+function DiffTest({ num }) {
+  return <div>Diff test component{num}</div>
 }
 
 function Hello1(props) {
@@ -71,15 +76,15 @@ function Hello() {
   return (
     <div  a="aaa"
           className={'sdf'}
-          style={{width: 220, color: 'red'}}
+          style={{width: 620, color: 'red'}}
           id='id1'
     >
-      <ul>
-        { arr.map((item) => <li>{item}</li>) }
-      </ul>
-      { arr.map((item) => <Hello1 item={item} />) }
+      {/*<ul>*/}
+        {/*{ arr.map((item) => <li>{item}</li>) }*/}
+      {/*</ul>*/}
+      {/*{ arr.map((item) => <Hello1 item={item} />) }*/}
       <App data={'data1'} />
-      <i id='sdf'>other child node</i>
+      {/*<i id='sdf'>other child node</i>*/}
     </div>
   )
 }

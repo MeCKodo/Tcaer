@@ -1,7 +1,7 @@
 function isChange(newNode, oldNode) {
   return typeof newNode !== typeof oldNode ||
     typeof newNode === 'string' && newNode !== oldNode ||
-    newNode.tag !== oldNode.tag
+    newNode.type !== oldNode.type
 }
 
 function setAttributes(dom, name, value = '') {

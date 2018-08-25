@@ -1,9 +1,9 @@
 import { setAttributes } from './utils';
 
 function createComponent(vnode, container) {
-  const { attrs, tag } = vnode;
+  const { attrs, type } = vnode;
   const props = attrs ? attrs : {};
-  const component = new tag(props);
+  const component = new type(props);
   return component.render ?
     renderComponent(component, container) :
     renderFunctionalComponent(component, container);
@@ -33,7 +33,7 @@ export function genDOM(vnode, container) {
   // 如果差值表达式里有props没有的值会出错，渲染boolean会无效
   if (typeof vnode === 'undefined' || typeof vnode === 'boolean') vnode = '';
   
-  if (typeof vnode.tag === 'function') {
+  if (typeof vnode.type === 'function') {
     return createComponent(vnode, container);
   }
   
@@ -43,7 +43,7 @@ export function genDOM(vnode, container) {
     return document.createTextNode(vnode);
   }
   
-  const parentDOM = document.createElement(vnode.tag);
+  const parentDOM = document.createElement(vnode.type);
   if (vnode.attrs) {
     Object.keys(vnode.attrs).forEach((item) => {
       setAttributes(parentDOM, item, vnode.attrs[item]);

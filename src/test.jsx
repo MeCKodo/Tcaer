@@ -29,6 +29,7 @@ class App extends Tcaer.Component {
   toggleSpan() {
     const { isSpan, num } = this.state;
     this.setState({
+      // text: '修改后的文本节点',
       isSpan: !isSpan,
       num: num + 1
     });
@@ -47,8 +48,8 @@ class App extends Tcaer.Component {
         { isSpan && <span>我是span，data=</span> }
   
         <button onClick={this.toggleSpan.bind(this)}>ssss{num}</button>
-        
-        
+  
+  
         {/*{isSpan ?*/}
           {/*<span onClick={this.onClick.bind(this)}>我是span，data=</span> :*/}
           {/*<div onClick={this.plus.bind(this)}>我切换<b>{num}</b>标签</div>*/}

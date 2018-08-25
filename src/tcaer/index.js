@@ -5,10 +5,10 @@ const Tcaer = {
   Component,
 };
 
-function h( tag, attrs, ...children ) {
+function h(type, attrs, ...children) {
   // console.log(children);
   return {
-    tag,
+    type,
     attrs,
     children
   }

@@ -48,7 +48,7 @@ class App extends Tcaer.Component {
         {/*{ isSpan && <span>我是span，data=</span> }*/}
   
         {text}
-        <DiffTest num={num} />
+        { isSpan ? <DiffTest num={num} /> : <DiffTest1 num={num} /> }
         {isSpan ?
           <b onClick={this.onClick.bind(this)}>b，bbbbbbbbb=</b> :
           <div onClick={this.plus.bind(this)}>我切换<b>{num}</b>标签</div>
@@ -63,7 +63,9 @@ class App extends Tcaer.Component {
 function DiffTest({ num }) {
   return <div>Diff test component{num}</div>
 }
-
+function DiffTest1({num}) {
+  return <div>co1m23123123123ponent{num}</div>
+}
 function Hello1(props) {
   const { item, b } = props;
   // console.log(b, '----bbb');

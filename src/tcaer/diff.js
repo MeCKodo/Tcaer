@@ -48,12 +48,11 @@ function diffNode(parent, newNode, oldNode) {
   if (newNode.type) {
     console.log(newNode, '---newNode');
     if (typeof newNode.type === 'function') {
-      const prevVnode = oldNode.type(oldNode.attrs || {});
-      const nextVnode = newNode.type(newNode.attrs || {});
-      const patches = diffNode(parent, nextVnode, prevVnode);
-  // console.log(patches);
-      // updateDOM(parent, patches);
-      return patches;
+      const prevComponent = oldNode.type(oldNode.attrs || {});
+      const nextComponent = newNode.type(newNode.attrs || {});
+      const prevVnode = prevComponent.render ? prevComponent.render() : prevComponent;
+      const nextVnode = nextComponent.render ? nextComponent.render() : nextComponent;
+      return diffNode(parent, nextVnode, prevVnode);
     } else {
       return {
         type: UPDATE,
@@ -91,12 +90,15 @@ function updateDOM(parent, patches, index = 0) {
     case UPDATE: {
       const { children } = patches;
       const childrenLen = children.length;
-      const childNodes = parent.childNodes;
       console.log(patches, '----patches');
       for(let i = 0; i < childrenLen; i++) {
+        const childNodes = parent.childNodes;
         const needUpdateChild = children[i];
         let node = childNodes[i];
         if (needUpdateChild) {
+          if (needUpdateChild.type === REMOVE) {
+            children.splice(i, 1);
+          }
           updateDOM(node, needUpdateChild);
         }
       }

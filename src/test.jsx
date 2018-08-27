@@ -38,7 +38,7 @@ class App extends Tcaer.Component {
     const { num } = this.state;
     this.setState({
       num: num + 1
-    })
+    });
     console.log('plus func');
   }
   render() {

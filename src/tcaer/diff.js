@@ -7,8 +7,8 @@ const REPLACE = 'REPLACE';
 const REMOVE = 'REMOVE';
 
 function diffChildren(parent, nextVnode, prevVnode) {
-  const { children: prevChildren } = prevVnode;
-  const { children: nextChildren } = nextVnode;
+  const prevChildren = prevVnode.children || prevVnode;
+  const nextChildren = nextVnode.children || nextVnode;
   const patches = [];
   const maxLen = Math.max(prevChildren.length, nextChildren.length);
   for(let i = 0;i < maxLen; i++) {
@@ -44,6 +44,7 @@ function diffNode(parent, newNode, oldNode) {
       newNode
     }
   }
+  console.log(newNode.type, '---newNode');
   
   if (newNode.type) {
     console.log(newNode, '---newNode');
@@ -60,24 +61,29 @@ function diffNode(parent, newNode, oldNode) {
         children: diffChildren(parent, newNode, oldNode)
       }
     }
+  } else if (Array.isArray(newNode)) {
+    const maxLen = Math.max(newNode.length, oldNode.length);
+    const patches = [];
+    for (let i = 0; i < maxLen; i++) {
+      patches.push(diffNode(parent, newNode[i], oldNode[i]))
+    }
+    return patches;
   }
   
 }
 
-function updateDOM(parent, patches, index = 0) {
+function updateDOM(parent, patches, isParent) {
   console.log(parent);
   if (!patches) return;
-  
-  const el = parent.childNodes[index];
   
   switch (patches.type) {
     case CREATE: {
       const { newNode } = patches;
       const newEl = genDOM(newNode);
-      // if (insertAdjacentType === 'beforebegin') {
-      //   return node.insertAdjacentElement(insertAdjacentType, newEl);
-      // }
-      return parent.appendChild(newEl);
+      if (isParent) {
+        return parent.appendChild(newEl);
+      }
+      return parent.parentNode.appendChild(newEl);
     }
     case REMOVE: {
       return parent.parentNode.removeChild(parent);
@@ -94,12 +100,24 @@ function updateDOM(parent, patches, index = 0) {
       for(let i = 0; i < childrenLen; i++) {
         const childNodes = parent.childNodes;
         const needUpdateChild = children[i];
-        let node = childNodes[i];
-        if (needUpdateChild) {
-          if (needUpdateChild.type === REMOVE) {
-            children.splice(i, 1);
+        if (Array.isArray(needUpdateChild)) {
+         for (let i = 0; i < needUpdateChild.length; i++) {
+           const patches = needUpdateChild[i];
+           let node = childNodes[i];
+           if (node) {
+             updateDOM(node, patches);
+           } else {
+             updateDOM(parent, patches, true);
+           }
+         }
+        } else {
+          let node = childNodes[i];
+          if (needUpdateChild) {
+            if (needUpdateChild.type === REMOVE) {
+              children.splice(i, 1);
+            }
+            updateDOM(node, needUpdateChild);
           }
-          updateDOM(node, needUpdateChild);
         }
       }
     }

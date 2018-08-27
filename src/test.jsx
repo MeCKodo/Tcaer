@@ -9,6 +9,7 @@ class App extends Tcaer.Component {
       text: '修改前的文本节点',
       isSpan: true,
       num: 0,
+      list: [1,2,3],
     }
   }
   
@@ -41,20 +42,39 @@ class App extends Tcaer.Component {
     });
     console.log('plus func');
   }
+  appendList(type) {
+    const { list } = this.state;
+    const a = [...list];
+    if (type === 'add') {
+      a.push(a.length + 1);
+    } else {
+      a.shift();
+    }
+    this.setState({
+      list: a,
+    })
+  }
   render() {
-    const { text, isSpan, num } = this.state;
+    const { text, isSpan, num, list } = this.state;
+    console.log(list);
     return (
       <div >
+        <button onClick={this.appendList.bind(this, 'add')}>list加数据</button>
+        <br />
+        <button onClick={this.appendList.bind(this, 'remove')}>list减数据</button>
+          <br/>
+        <button onClick={this.toggleSpan.bind(this)}>组件切换{num}</button>
+          <br/>
         {/*{ isSpan && <span>我是span，data=</span> }*/}
-  
-        {text}
+        {/*{text}*/}
         { isSpan ? <DiffTest num={num} /> : <DiffTest1 num={num} /> }
         {isSpan ?
           <b onClick={this.onClick.bind(this)}>b，bbbbbbbbb=</b> :
           <div onClick={this.plus.bind(this)}>我切换<b>{num}</b>标签</div>
         }
-        <button onClick={this.toggleSpan.bind(this)}>sdfsdf{num}</button>
-
+        <ul>
+        { list.map((item) => <li>{item}</li>) }
+        </ul>
       </div>
     );
   }

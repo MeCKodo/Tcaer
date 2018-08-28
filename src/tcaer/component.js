@@ -23,15 +23,3 @@ export default class Component {
   }
   
 }
-
-function a(obj) {
-  if (typeof obj === 'string') {
-    console.log('string')
-  } else if (!obj) {
-    console.log('undefined or null')
-  } else if (typeof obj === 'object') {
-    console.log('object')
-  } else {
-    console.log('fn')
-  }
-}

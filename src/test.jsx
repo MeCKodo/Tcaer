@@ -1,5 +1,14 @@
 import Tcaer from './tcaer';
 
+class Bbb extends Tcaer.Component {
+  componentDidMount() {
+    console.log('componentDidMount() BBBBBBB');
+  }
+  render() {
+    return <div> bbbbbb </div>
+  }
+}
+
 class App extends Tcaer.Component {
   constructor(props) {
     super(props);
@@ -67,7 +76,7 @@ class App extends Tcaer.Component {
           <br/>
         {/*{ isSpan && <span>我是span，data=</span> }*/}
         {/*{text}*/}
-        { isSpan ? <DiffTest num={num} /> : <DiffTest1 num={num} /> }
+        { isSpan ? <DiffTest num={num} /> : <Bbb /> }
         {isSpan ?
           <b onClick={this.onClick.bind(this)}>b，bbbbbbbbb=</b> :
           <div onClick={this.plus.bind(this)}>我切换<b>{num}</b>标签</div>

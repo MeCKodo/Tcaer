@@ -1,22 +1,24 @@
 import { setAttributes, isChange } from "../tcaer-dom/utils";
 import {genDOM} from "../tcaer-dom";
 
-const CREATE = 'CREATE';
-const UPDATE = 'UPDATE';
-const REPLACE = 'REPLACE';
-const REMOVE = 'REMOVE';
+const Type = {
+  CREATE: 'CREATE',
+  UPDATE: 'UPDATE',
+  REPLACE: 'REPLACE',
+  REMOVE: 'REMOVE',
+};
 
 function diffChildren(parent, nextVnode, prevVnode) {
   const prevChildren = prevVnode.children || prevVnode;
   const nextChildren = nextVnode.children || nextVnode;
   const patches = [];
   const maxLen = Math.max(prevChildren.length, nextChildren.length);
-  for(let i = 0;i < maxLen; i++) {
-    patches[i] = diffNode(
+  for(let i = 0; i < maxLen; i++) {
+    patches.push(diffNode(
       parent,
       nextChildren[i],
       prevChildren[i],
-    )
+    ))
   }
   return patches;
 }
@@ -29,17 +31,17 @@ function diffNode(parent, newNode, oldNode) {
   
   if (!oldNode) {
     return {
-      type: CREATE,
+      type: Type.CREATE,
       newNode,
     }
   }
   if (!newNode) {
-    return { type: REMOVE }
+    return { type: Type.REMOVE }
   }
   
   if (isChange(newNode, oldNode)) {
     return {
-      type: REPLACE,
+      type: Type.REPLACE,
       newNode
     }
   }
@@ -55,7 +57,7 @@ function diffNode(parent, newNode, oldNode) {
       return diffNode(parent, nextVnode, prevVnode);
     } else {
       return {
-        type: UPDATE,
+        type: Type.UPDATE,
         tag: newNode.type,
         children: diffChildren(parent, newNode, oldNode)
       }
@@ -76,7 +78,7 @@ function updateDOM(parent, patches, isParent) {
   if (!patches) return;
   
   switch (patches.type) {
-    case CREATE: {
+    case Type.CREATE: {
       const { newNode } = patches;
       const newEl = genDOM(newNode, parent);
       if (isParent) {
@@ -84,15 +86,15 @@ function updateDOM(parent, patches, isParent) {
       }
       return parent.parentNode.appendChild(newEl);
     }
-    case REMOVE: {
+    case Type.REMOVE: {
       return parent.parentNode.removeChild(parent);
     }
-    case REPLACE: {
+    case Type.REPLACE: {
       const { newNode } = patches;
       const newEl = genDOM(newNode, parent);
       return parent.parentNode.replaceChild(newEl, parent);
     }
-    case UPDATE: {
+    case Type.UPDATE: {
       const { children } = patches;
       const childrenLen = children.length;
       for(let i = 0; i < childrenLen; i++) {
@@ -111,9 +113,9 @@ function updateDOM(parent, patches, isParent) {
         } else {
           let node = childNodes[i];
           if (needUpdateChild) {
-            if (needUpdateChild.type === REMOVE) {
-              children.splice(i, 1);
-            }
+            // if (needUpdateChild.type === Type.REMOVE) {
+            //   children.splice(i, 1);
+            // }
             updateDOM(node, needUpdateChild);
           }
         }

@@ -26,16 +26,6 @@ class App extends Tcaer.Component {
     console.log('componentDidMount()', document.getElementById('app'));
   }
   
-  onClick() {
-    // this.setState({
-    //   a: 'new',
-    //   dataId: 'dataId',
-    //   className: '',
-    //   text: '修改后的文本节点',
-    //   isSpan: false,
-    // });
-    console.log('span');
-  };
   toggleSpan() {
     const { isSpan, num } = this.state;
     this.setState({
@@ -77,8 +67,8 @@ class App extends Tcaer.Component {
         {/*{ isSpan && <span>我是span，data=</span> }*/}
         {/*{text}*/}
         { isSpan ? <DiffTest num={num} /> : <Bbb /> }
-        {isSpan ?
-          <b onClick={this.onClick.bind(this)}>b，bbbbbbbbb=</b> :
+        {!isSpan ?
+          <b>b，bbbbbbbbb=</b> :
           <div onClick={this.plus.bind(this)}>我切换<b>{num}</b>标签</div>
         }
         <ul>

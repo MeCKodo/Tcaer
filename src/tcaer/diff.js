@@ -1,4 +1,4 @@
-import { setAttributes, isChange } from "../tcaer-dom/utils";
+import { isChange } from "../tcaer-dom/utils";
 import {genDOM} from "../tcaer-dom";
 
 const Type = {
@@ -35,6 +35,7 @@ function diffNode(parent, newNode, oldNode) {
       newNode,
     }
   }
+  
   if (!newNode) {
     return { type: Type.REMOVE }
   }
@@ -45,32 +46,37 @@ function diffNode(parent, newNode, oldNode) {
       newNode
     }
   }
-  // console.log(newNode.type, '---newNode');
   
   if (newNode.type) {
-    // console.log(newNode, '---newNode');
     if (typeof newNode.type === 'function') {
-      const prevComponent = oldNode.type(oldNode.attrs || {});
-      const nextComponent = newNode.type(newNode.attrs || {});
-      const prevVnode = prevComponent.render ? prevComponent.render() : prevComponent;
-      const nextVnode = nextComponent.render ? nextComponent.render() : nextComponent;
-      return diffNode(parent, nextVnode, prevVnode);
-    } else {
-      return {
-        type: Type.UPDATE,
-        tag: newNode.type,
-        children: diffChildren(parent, newNode, oldNode)
-      }
+      return diffComponent(parent, newNode, oldNode);
+    }
+    
+    return {
+      type: Type.UPDATE,
+      tag: newNode.type,
+      children: diffChildren(parent, newNode, oldNode)
     }
   } else if (Array.isArray(newNode)) {
-    const maxLen = Math.max(newNode.length, oldNode.length);
-    const patches = [];
-    for (let i = 0; i < maxLen; i++) {
-      patches.push(diffNode(parent, newNode[i], oldNode[i]))
-    }
-    return patches;
+    return deepDiff(parent, newNode, oldNode);
   }
-  
+}
+
+function deepDiff(parent, newNode, oldNode) {
+  const maxLen = Math.max(newNode.length, oldNode.length);
+  const patches = [];
+  for (let i = 0; i < maxLen; i++) {
+    patches.push(diffNode(parent, newNode[i], oldNode[i]))
+  }
+  return patches;
+}
+
+function diffComponent(parent, newNode, oldNode) {
+  const prevComponent = oldNode.type(oldNode.attrs || {});
+  const nextComponent = newNode.type(newNode.attrs || {});
+  const prevVnode = prevComponent.render ? prevComponent.render() : prevComponent;
+  const nextVnode = nextComponent.render ? nextComponent.render() : nextComponent;
+  return diffNode(parent, nextVnode, prevVnode);
 }
 
 function updateDOM(parent, patches, isParent) {
@@ -101,25 +107,26 @@ function updateDOM(parent, patches, isParent) {
         const childNodes = parent.childNodes;
         const needUpdateChild = children[i];
         if (Array.isArray(needUpdateChild)) {
-         for (let i = 0; i < needUpdateChild.length; i++) {
-           const patches = needUpdateChild[i];
-           let node = childNodes[i];
-           if (node) {
-             updateDOM(node, patches);
-           } else {
-             updateDOM(parent, patches, true);
-           }
-         }
+          deepUpdateDOM(needUpdateChild, childNodes);
         } else {
           let node = childNodes[i];
           if (needUpdateChild) {
-            // if (needUpdateChild.type === Type.REMOVE) {
-            //   children.splice(i, 1);
-            // }
             updateDOM(node, needUpdateChild);
           }
         }
       }
+    }
+  }
+}
+
+function deepUpdateDOM(needUpdateChild, childNodes) {
+  for (let i = 0; i < needUpdateChild.length; i++) {
+    const patches = needUpdateChild[i];
+    let node = childNodes[i];
+    if (node) {
+      updateDOM(node, patches);
+    } else {
+      updateDOM(parent, patches, true);
     }
   }
 }

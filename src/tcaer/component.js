@@ -1,5 +1,4 @@
-import { genDOM } from "../tcaer-dom";
-import { updateAttrs, update } from "./diff";
+import { update } from "./update";
 
 function updateComponent(instance) {
   const nextVnode = instance.render();

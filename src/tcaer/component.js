@@ -12,7 +12,7 @@ function updateComponent(instance) {
 
 export default class Component {
   constructor(props = {}) {
-    this.state = this.state || {};
+    this.state = {};
     this.props = props;
   }
   
